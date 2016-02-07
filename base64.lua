@@ -1,7 +1,7 @@
 -- vim: ts=4 sw=4
 --
 -- base64 encoder and decoder
--- this module is based on 'https://github.com/nodemcu/nodemcu-firmware/blob/dev/lua_modules/base64/base64_v2.lua' by 'md5crypt'
+-- this module based on 'https://github.com/nodemcu/nodemcu-firmware/blob/dev/lua_modules/base64/base64_v2.lua' by 'md5crypt'
 
 local tab = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
 base64 = {
