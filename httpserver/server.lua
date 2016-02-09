@@ -15,6 +15,12 @@ function cb.start()
 	server:listen(config.get("http.port"), function(socket)
 		local handler=Handler(socket)
 	end)
+	local ipap = tostring( wifi.ap.getip() or "")
+	local ipsta= tostring(wifi.sta.getip() or "")
+	console.log("httpserver is listing at: "..
+	ipap..(ipap~="" and ipsta~="" and " and " or "")..ipsta)
+	ipap=nil ipsta=nil
+	collectgarbage()
 end
 
 function cb.stop()
