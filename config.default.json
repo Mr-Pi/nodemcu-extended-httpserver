@@ -1,0 +1,28 @@
+{
+  "wifi": {
+    "mode": "STATION",
+    "client": {
+      "ssid": "yourLocalWiFi",
+      "password": "",
+      "auto": true
+    },
+    "ap": {
+      "ssid": "NodeMCU httpserver",
+      "password": "",
+      "authentication": "AUTH_OPEN",
+      "hidden": false
+    }
+  },
+  "safemode": {
+    "enabled": true,
+    "authentication": "AUTH_WPA2_PSK",
+    "hidden": false,
+    "ssid": "NodeMCU httpserver",
+    "password": "NodeMCU-HTTP-Server"
+  },
+  "http": {
+    "enabled": true,
+    "port": 80,
+    "prefix": "http"
+  }
+}

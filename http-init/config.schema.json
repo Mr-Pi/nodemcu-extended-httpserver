@@ -1,0 +1,149 @@
+{
+	"title": "Configuration",
+	"type": "object",
+	"format": "grid",
+	"properties": {
+		"wifi" : {
+			"title": "WiFi",
+			"type": "object",
+			"options": {"disable_collapse":false,"collapsed":true},
+			"propertyOrder": 1000,
+			"properties": {
+				"mode": {
+					"title": "WiFi-Mode",
+					"type": "string",
+					"options": {"enum_titles":["Client","AP","Client and AP"]},
+					"enum": ["STATION","SOFTAP","STATIONAP"],
+					"propertyOrder": 500
+				},
+				"client": {
+					"title": "Client",
+					"type": "object",
+					"format": "grid",
+					"properties": {
+						"ssid": {
+							"type": "string",
+							"minLength": 1,
+							"maxLength": 32,
+							"default": "yourLocalWiFi"
+						},
+						"password": {
+							"type": "string",
+							"format": "wifipassword",
+							"description": "leave empty to connect to an open network",
+							"maxLength": 64
+						},
+						"auto": {
+							"title": "auto connect",
+							"type": "boolean",
+							"readonly": true,
+							"default": true
+						}
+					}
+				},
+				"ap": {
+					"title": "Access Point",
+					"type": "object",
+					"format": "grid",
+					"properties": {
+						"ssid": {
+							"type": "string",
+							"default": "NodeMCU httpserver",
+							"minLength": 1,
+							"maxLength": 32
+						},
+						"password": {
+							"type": "string",
+							"format": "wifipassword",
+							"maxLength": 64
+						},
+						"authentication": {
+							"type": "string",
+							"enum": ["AUTH_OPEN","AUTH_WEP","AUTH_WPA_PSK","AUTH_WPA2_PSK","AUTH_WPA_WPA2_PSK"],
+							"default": "AUTH_OPEN"
+						},
+						"hidden": {
+							"type": "boolean"
+						}
+					}
+				}
+			}
+		},
+		"safemode": {
+			"title": "Safeboot mode",
+			"type": "object",
+			"format": "grid",
+			"options": {"disable_collapse":false,"collapsed":true},
+			"propertyOrder": 2000,
+			"properties": {
+				"enabled": {
+					"type": "boolean",
+					"readOnly": true,
+					"default": true,
+					"propertyOrder": 200,
+					"options": {"grid_columns":5}
+				},
+				"authentication": {
+					"type": "string",
+					"readOnly": true,
+					"enum": ["AUTH_OPEN","AUTH_WEP","AUTH_WPA_PSK","AUTH_WPA2_PSK","AUTH_WPA_WPA2_PSK"],
+					"default": "AUTH_WPA2_PSK",
+					"propertyOrder": 400,
+					"options": {"grid_columns":4}
+				},
+				"hidden": {
+					"title": "hidden WiFi",
+					"type": "boolean",
+					"readOnly": true,
+					"default": false,
+					"propertyOrder": 600,
+					"options": {"grid_columns":3}
+				},
+				"ssid": {
+					"type": "string",
+					"readOnly": true,
+					"minLength": 1,
+					"maxLength": 32,
+					"default": "NodeMCU httpserver",
+					"propertyOrder": 800,
+					"options": {"grid_columns":5}
+				},
+				"password": {
+					"type": "string",
+					"readOnly": true,
+					"format": "wifipassword",
+					"maxLength": 64,
+					"default": "NodeMCU-HTTP-Server",
+					"propertyOrder": 1000,
+					"options": {"grid_columns":7}
+				}
+			}
+		},
+		"http": {
+			"title": "HTTP server",
+			"type": "object",
+			"format": "grid",
+			"options": {"disable_collapse":false,"collapsed":true},
+			"propertyOrder": 3000,
+			"properties": {
+				"enabled": {
+					"type": "boolean",
+					"default": true,
+					"readonly": true
+				},
+				"port": {
+					"type": "integer",
+					"default": 80,
+					"minimum": 1,
+					"maximum": 65535,
+					"format": "number"
+				},
+				"prefix": {
+					"type": "string",
+					"default": "http",
+					"readonly": true
+				}
+			}
+		}
+	}
+}

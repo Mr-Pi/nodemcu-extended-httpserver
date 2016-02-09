@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<!-- vim: ts=4 sw=4 -->
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<title>NodeMCU - HTTP Server</title>
+
+		<meta name="language" content="en" />
+		<meta name="description" content="NodeMCU - HTTP Server configuration" />
+ 		<meta name="keywords" content="ESP8266, NodeMCU, httpserver, HTTP Server" />
+		<meta name="title" content="NodeMCU - HTTP Server" />
+		<meta name="author" content="Mr. Pi <mrpi@mr-pi.de>" />
+		<meta name="publisher" content="Mr. Pi" />
+		<meta name="copyright" content="Mr. Pi, 2016" />
+		<meta name="abstract" content="NodeMCU - HTTP Server configuration" />
+		<meta name="page-topic" content="NodeMCU HTTP Server" />
+		<meta name="page-type" content="configuration" />
+
+		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+	</head>
+	<body>
+		<div class="container">
+			<h1>NodeMCU - HTTP Server</h1>
+
+			<div id="config">
+				<h3><span>Configuration - Please Wait...</span></h3>
+				<div class="well well-sm"></div>
+			</div>
+			<form method="post">
+				<h3><span>Firmware upgrade</span></h3>
+				<div class="well well-sm">
+					<div class="form-group">
+						<label for="fw-upgrade">Firmware</label>
+						<input name="firmware" type="file" class="form-control" id="fw-upgrade">
+					</div>
+				</div>
+			</form>
+		</div>
+		<abbr title="Enter expert mode" style="display:block;position:fixed;bottom:0.25em;right:0.25em;">
+			<a href="#expert" onclick="$('[disabled]').prop('disabled',false);" style="color:darkred;">π</a>
+		</abbr>
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+		<script src="https://cdn.rawgit.com/JJediny/json-editor/gh-pages/dist/jsoneditor.min.js"></script>
+		<script>
+// defaults
+			JSONEditor.defaults.options.theme = 'bootstrap3'
+			JSONEditor.defaults.options.ajax = true
+			JSONEditor.defaults.options.disable_array_reorder = true
+			JSONEditor.defaults.options.disable_collapse = true
+			JSONEditor.defaults.options.disable_edit_json = true
+			JSONEditor.defaults.options.disable_properties = true
+			JSONEditor.defaults.options.no_additional_properties = true
+			JSONEditor.defaults.options.required_by_default = true
+			JSONEditor.defaults.options.show_errors = "always"
+
+// error checker
+			JSONEditor.defaults.custom_validators.push(function(schema, value, path) {
+				var errors = [];
+				if(schema.format==="wifipassword") {
+					if(! /^($|.{8,64}$)/.test(value)) {
+						errors.push({
+							path: path,
+							property: 'format',
+							message: "A wifi password must contain 8 to 64 characters"
+						})
+					}
+					if(path==="root.wifiap.password" && value.length===0 &&
+					   editor.getEditor("root.wifiap.authentication").getValue()!=="AUTH_OPEN") {
+						errors.push({
+							path: path,
+							property: 'format',
+							message: "A WiFi password must be provided unless authentication type is AUTH_OPEN"
+						})
+					}
+				}
+				return errors
+			})
+
+// initialization
+			var xmlReqGet = new XMLHttpRequest();
+			var xmlReqPost = new XMLHttpRequest();
+			xmlReqGet.open("GET", "/config.json", true)
+			xmlReqGet.setRequestHeader("Content-Type","application/json")
+
+			function submitConfig() {
+				if(editor.validate().length!==0) {
+					console.debug("invalid configuration:",editor.validate())
+				} else {
+					console.debug(editor.getValue())
+					editor.disable()
+					xmlReqPost.open("POST", "/config.lua", true)
+					xmlReqPost.setRequestHeader("Content-Type","application/json")
+					xmlReqPost.onload=function() {
+						editor.enable()
+						if(window.location.hash==="#expert")
+							$('[disabled]').prop('disabled', false);
+					}
+					xmlReqPost.send(JSON.stringify(editor.getValue()))
+				}
+			}
+
+			xmlReqGet.onload = function () {
+				console.debug(this)
+				$("#config").html("")
+				editor = new JSONEditor($("#config").get(0), {
+					schema: {"$ref":"config.schema.json"},
+					form_name_root: "config",
+					startval: (this.status===200)?JSON.parse(this.response):{}
+				})
+				editor.on('change',submitConfig)
+				if(this.status!==200) {
+					alert("failed to load configuration!\n\nthe old configuration will be overwriten on changes")
+				}
+			}
+			xmlReqGet.send()
+		</script>
+	</body>
+</html>
