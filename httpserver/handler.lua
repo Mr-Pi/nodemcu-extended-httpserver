@@ -42,11 +42,12 @@ local Handler=class(function(handler,socket)
 --				socket:close()
 --			end
 		end
+		data=nil
 		collectgarbage()
 	end)
 
 	handler.socket:on("disconnection", function(socket)
-		handler=nil
+		handler.payload=nil handler.header=nil handler.socket=nil socket=nil handler=nil
 		collectgarbage()
 		console.log("http handler connection closed")
 	end)
