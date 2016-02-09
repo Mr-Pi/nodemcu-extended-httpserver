@@ -1,7 +1,12 @@
 -- vim: ts=4 sw=4
-require "misclib"
+--
+--
+
+require "console"
+
 
 if not httpreq then httpreq={} end
+
 
 local function decodeURI(str)
 	str=str:gsub('%+', " ")
@@ -26,12 +31,25 @@ function httpreq.assembleSimplePackage(code, codeMsg, contentType, body)
 	return package
 end
 
+local defaultExt = {"html","txt","lua","lc"}
 function httpreq.parseURI(uri)
-	local args={}
+	local args = {}
+	local fslist = file.list()
 	local filename = uri:gsub("^([^?$]+)[?]*(.*)$","%1")
 	local argsStr = uri:gsub("^([^?$]+)[?]*(.*)$","%2")
-	filename = filename:gsub("/$","/index.html")
+	filename = config.get("http.prefix")..filename:gsub("/$","/index")
 	local _, _, ext = filename:find("[\.]+([^\.\/]+)$")
+
+	if not ext then
+		for _, cExt in ipairs(defaultExt) do
+			if fslist[filename.."."..cExt] then
+				ext=cExt
+				filename = filename.."."..cExt
+				break
+			end
+		end
+	end
+
 	console.debug("http request filename: "..tostring(filename),6)
 	console.debug("http request argument string: "..tostring(argsStr),7)
 
@@ -41,7 +59,7 @@ function httpreq.parseURI(uri)
 		console.debug("parsed uri argument '"..tostring(key).."'='"..tostring(value).."'",6)
 	end
 
-	argsStr=nil
+	argsStr=nil fslist=nil uri=nil
 	collectgarbage()
 	return filename, args, ext
 end
@@ -53,7 +71,7 @@ function httpreq.parseHeader(payload)
 		collectgarbage()
 		return false, payload
 	end
-	console.debug("http header is complete")
+	console.debug("http header complete")
 	local hEnd, bStart = payload:find("\r\n\r\n",1,true)
 	local headerStr = payload:sub(1,hEnd) --get the whole header as string
 	local bodyStr   = payload:sub(bStart+1) --the remaining part is the body
@@ -80,4 +98,4 @@ function httpreq.parseHeader(payload)
 end
 
 
-console.moduleLoaded("http-request")
+return console.moduleLoaded(...)

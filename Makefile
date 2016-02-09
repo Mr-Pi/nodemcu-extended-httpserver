@@ -11,7 +11,7 @@ SPEED=9600
 # End of user config
 ######################################################################
 HTTP_FILES := $(wildcard http/*)
-SERVER_FILES := base64.lua class.lua config.lua handler.lua misclib.lua server.lua http-request.lua http-error.lua responder.lua http-static.lua
+SERVER_FILES := $(wildcard httpserver/*) config.default.json base64.lua class.lua config.lua console.lua
 
 # Print usage
 usage:

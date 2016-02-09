@@ -1,8 +1,15 @@
 -- vim: ts=4 sw=4
-require "misclib"
+--
+--
+
+require "console"
 
 
-require "http-static"
+if not httpreq then httpreq={} end
+if not httpreq.responder then httpreq.responder={} end
 
 
-console.moduleLoaded("responder")
+require "httpserver/static"
+
+
+return console.moduleLoaded(...)

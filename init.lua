@@ -1,1 +1,1 @@
-require "server"
+require "httpserver/server"

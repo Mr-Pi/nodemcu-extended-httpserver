@@ -1,5 +1,8 @@
 -- vim: ts=4 sw=4
-require "misclib"
+--
+--
+
+require "console"
 
 
 if not httpreq then httpreq={} end
@@ -15,19 +18,16 @@ end
 function staticResponder.respond(header, socket, handler)
 	console.log("staticResponder executed")
 	local fslist = file.list()
-	local filename=config.getPrefix()..header.filename
-	if fslist[filename] then
-		console.debug("serving file static: "..filename)
+	if fslist[header.filename] then
+		console.debug("serving file static: "..header.filename)
 		if header.method~="GET" and header.method~="HEAD" then
-			console.log("method not allowed for static file: "..filename)
-			socket:send(httpreq.errorResponder(405,"Method Not Allowed"))
-			socket:close()
+			console.log("method not allowed for static file: "..header.filename)
+			httpreq.errorResponder(405, "Method Not Allowed", socket)
 			collectgarbage()
 			return true
-		elseif header.method=="GET" and (not file.open(filename)) then
-			console.log("failed to serve static file: "..filename)
-			socket:send(httpreq.errorResponder(500,"Internal Server Error"))
-			socket:close()
+		elseif header.method=="GET" and (not file.open(header.filename)) then
+			console.log("failed to serve static file: "..header.filename)
+			httpreq.errorResponder(500, "Internal Server Error", socket)
 			collectgarbage()
 			return true
 		elseif header.method=="GET" then
@@ -37,7 +37,7 @@ function staticResponder.respond(header, socket, handler)
 					socket:send(data)
 					console.debug("sending data: "..data,8)
 				else
-					console.log("served served static file: "..tostring(filename))
+					console.log("served served static file: "..tostring(header.filename))
 					file.close()
 					socket:close()
 				end
@@ -45,7 +45,7 @@ function staticResponder.respond(header, socket, handler)
 				collectgarbage()
 			end)
 		end
-		socket:send(httpreq.assembleBasicHeader(200, "OK", getMimeType(header.ext), fslist[filename]).."\r\n")
+		socket:send(httpreq.assembleBasicHeader(200, "OK", getMimeType(header.ext), fslist[header.filename]).."\r\n")
 		if header.method=="HEAD" then
 			socket:close()
 		end
@@ -60,4 +60,4 @@ end
 table.insert(httpreq.responder,staticResponder)
 
 
-console.moduleLoaded("http-static")
+return console.moduleLoaded(...)

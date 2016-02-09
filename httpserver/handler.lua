@@ -1,11 +1,15 @@
 -- vim: sw=4 ts=4
+--
+-- http request handler
+
 require "class"
-require "http-request"
-require "responder"
-require "http-error"
+require "console"
+require "httpserver/request"
+require "httpserver/responder"
+require "httpserver/errorpage"
 
 
-Handler=class(function(handler,socket)
+local Handler=class(function(handler,socket)
 	console.log("http handler connection opened")
 	handler.socket=socket
 	handler.payload=""
@@ -50,4 +54,8 @@ Handler=class(function(handler,socket)
 end)
 
 
-console.moduleLoaded("handler")
+local function loaded(args)
+	console.moduleLoaded(args)
+	return Handler
+end
+return loaded(...)

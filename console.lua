@@ -1,4 +1,6 @@
 -- vim: ts=4 sw=4
+--
+--
 
 console={}
 
@@ -26,10 +28,10 @@ function console.moduleLoaded(module)
 end
 
 function console.setDebugLevel(level)
-	consoleCfg.level=level
+	consoleCfg.level=tonumber(level)
 	level=nil
 	collectgarbage()
 end
 
 
-console.moduleLoaded("misclib")
+return console.moduleLoaded(...)

@@ -1,18 +1,29 @@
 -- vim: ts=4 sw=4
-require "misclib"
-require "handler"
+--
+-- httpserver main module
+
+require "console"
 require "config"
+Handler=require "httpserver/handler"
 
 local cb={}
 local server
 
+function cb.start()
+	console.log("starting httpserver")
+	server=net.createServer(net.TCP, 30)
+	server:listen(config.get("http.port"), function(socket)
+		local handler=Handler(socket)
+	end)
+end
 
-console.log("starting httpserver")
-server=net.createServer(net.TCP, 30)
-server:listen(config.getPort(), function(socket)
-	local handler=Handler(socket)
-end)
+function cb.stop()
+	server:close()
+end
 
 
-console.moduleLoaded("server")
-return cb
+local function loaded(args)
+	console.moduleLoaded(args)
+	return cb
+end
+return loaded(...)
