@@ -92,7 +92,7 @@ function httpreq.parseHeader(payload)
 		header.contentLength=tonumber(header.opts["Content-Length"])
 	end
 	header.filename, header.args, header.ext = httpreq.parseURI(header.uri)
-	headerStr=nil hEnd=nil bStart=nil
+	headerStr=nil hEnd=nil bStart=nil payload=nil
 	collectgarbage()
 	return header, bodyStr
 end
