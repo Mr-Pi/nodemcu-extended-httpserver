@@ -18,7 +18,10 @@ function cb.start()
 end
 
 function cb.stop()
+	console.log("stopping httpserver")
 	server:close()
+	server=nil
+	collectgarbage()
 end
 
 
