@@ -38,6 +38,7 @@ Handler=class(function(handler,socket)
 --				socket:close()
 --			end
 		end
+		collectgarbage()
 	end)
 
 	handler.socket:on("disconnection", function(socket)
@@ -45,6 +46,7 @@ Handler=class(function(handler,socket)
 		collectgarbage()
 		console.log("http handler connection closed")
 	end)
+	collectgarbage()
 end)
 
 

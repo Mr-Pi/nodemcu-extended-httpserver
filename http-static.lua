@@ -21,19 +21,21 @@ function staticResponder.respond(header, socket, handler)
 		if header.method~="GET" and header.method~="HEAD" then
 			console.log("method not allowed for static file: "..filename)
 			socket:send(httpreq.errorResponder(405,"Method Not Allowed"))
+			socket:close()
 			collectgarbage()
 			return true
 		elseif header.method=="GET" and (not file.open(filename)) then
 			console.log("failed to serve static file: "..filename)
 			socket:send(httpreq.errorResponder(500,"Internal Server Error"))
+			socket:close()
 			collectgarbage()
 			return true
 		elseif header.method=="GET" then
 			socket:on("sent", function(socket)
-				local data=file.read(128)
+				local _, data = pcall(file.read, 128)
 				if data then
 					socket:send(data)
-					console.debug("sending data: "..data,7)
+					console.debug("sending data: "..data,8)
 				else
 					console.log("served served static file: "..tostring(filename))
 					file.close()
@@ -43,7 +45,7 @@ function staticResponder.respond(header, socket, handler)
 				collectgarbage()
 			end)
 		end
-		socket:send(httpreq.asambleBasicHeader(200, "OK", getMimeType(header.ext), fslist[filename]).."\r\n")
+		socket:send(httpreq.assembleBasicHeader(200, "OK", getMimeType(header.ext), fslist[filename]).."\r\n")
 		if header.method=="HEAD" then
 			socket:close()
 		end

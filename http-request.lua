@@ -9,7 +9,7 @@ local function decodeURI(str)
 	return str
 end
 
-function httpreq.asambleBasicHeader(code, codeMsg, contentType, length)
+function httpreq.assembleBasicHeader(code, codeMsg, contentType, length)
 	local header="HTTP/1.1 "..tostring(code).." "..tostring(codeMsg).."\r\n"
 	header=header.."Server: NodeMCU simple httpserver (v0.1.0)\r\n"
 	header=header.."Content-Type: "..tostring(contentType).."\r\n"
@@ -19,8 +19,8 @@ function httpreq.asambleBasicHeader(code, codeMsg, contentType, length)
 	return header
 end
 
-function httpreq.asambleSimplePackage(code, codeMsg, contentType, body)
-	local package=httpreq.asambleBasicHeader(code, codeMsg, contentType, #tostring(body))
+function httpreq.assembleSimplePackage(code, codeMsg, contentType, body)
+	local package=httpreq.assembleBasicHeader(code, codeMsg, contentType, #tostring(body))
 	package=package.."\r\n"..tostring(body)
 	collectgarbage()
 	return package

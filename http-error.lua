@@ -14,7 +14,8 @@ function httpreq.errorResponder(code, codeMsg)
 	errorMsg=errorMsg.."</head><body>"
 	errorMsg=errorMsg.."<h1>"..tostring(code).." - "..tostring(codeMsg).."</h1>"
 	errorMsg=errorMsg.."</body></html>"
-	return httpreq.asambleSimplePackage(code, codeMsg, "text/html; charset=UTF-8", errorMsg)
+	console.debug("errorResponder error package assembled: "..tostring(code).." - "..tostring(codeMsg))
+	return httpreq.assembleSimplePackage(code, codeMsg, "text/html; charset=UTF-8", errorMsg)
 end
 
 function errorResponder.respond(header, socket, handler)
