@@ -30,6 +30,24 @@ function cb.stop()
 	collectgarbage()
 end
 
+function cb.startSafemode()
+	console.log("switching to safemode")
+	if not config.loaded then config.loaded={} end
+	config.loaded.http = {port=80, prefix="http-init"}
+	tmr.register(0, config.get("safemode.timeout"), tmr.ALARM_SINGLE, function()
+		console.log("switching back to normal serve mode")
+		config.load()
+		if not config.get("http.enabled") then cb.stop() end
+	end)
+	tmr.start(0)
+end
+
+if config.get("safemode.enabled") or config.get("http.enabled") then
+	cb.start()
+end
+if config.get("safemode.enabled") then
+	cb.startSafemode()
+end
 
 local function loaded(args)
 	console.moduleLoaded(args)

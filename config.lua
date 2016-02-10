@@ -25,8 +25,14 @@ local function loadCfg(filename)
 	return cfg
 end
 
-config.default=loadCfg("config.default.json")
-config.loaded=loadCfg("config.json")
+
+function config.load()
+	config.default=loadCfg("config.default.json")
+	config.loaded=loadCfg("config.json")
+	console.log("configuration loaded")
+end
+
+config.load()
 
 function config.get(part)
 	local result={}
