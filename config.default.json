@@ -15,7 +15,9 @@
   },
   "safemode": {
     "enabled": true,
+    "timeout": 30000,
     "authentication": "AUTH_WPA2_PSK",
+    "asclient": true,
     "hidden": false,
     "ssid": "NodeMCU httpserver",
     "password": "NodeMCU-HTTP-Server"

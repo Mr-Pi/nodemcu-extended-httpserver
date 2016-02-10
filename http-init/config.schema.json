@@ -36,7 +36,7 @@
 						"auto": {
 							"title": "auto connect",
 							"type": "boolean",
-							"readonly": true,
+							"readOnly": true,
 							"default": true
 						}
 					}
@@ -86,11 +86,11 @@
 				"timeout": {
 					"type": "integer",
 					"readOnly": true,
-                    "format": "number",
+					"format": "number",
 					"default": 30000,
 					"propertyOrder": 300,
-                    "minimum": 1,
-                    "maximum": 12884901,
+					"minimum": 1,
+					"maximum": 12884901,
 					"options": {"grid_columns":2}
 				},
 				"authentication": {
@@ -99,7 +99,15 @@
 					"enum": ["AUTH_OPEN","AUTH_WEP","AUTH_WPA_PSK","AUTH_WPA2_PSK","AUTH_WPA_WPA2_PSK"],
 					"default": "AUTH_WPA2_PSK",
 					"propertyOrder": 400,
-					"options": {"grid_columns":4}
+					"options": {"grid_columns":3}
+				},
+				"asclient": {
+					"title": "connect as client",
+					"type": "boolean",
+					"readOnly": true,
+					"default": true,
+					"propertyOrder": 500,
+					"options": {"grid_columns":2}
 				},
 				"hidden": {
 					"title": "hidden WiFi",
@@ -107,7 +115,7 @@
 					"readOnly": true,
 					"default": false,
 					"propertyOrder": 600,
-					"options": {"grid_columns":3}
+					"options": {"grid_columns":2}
 				},
 				"ssid": {
 					"type": "string",
@@ -139,7 +147,7 @@
 				"enabled": {
 					"type": "boolean",
 					"default": true,
-					"readonly": true
+					"readOnly": true
 				},
 				"port": {
 					"type": "integer",
@@ -151,7 +159,7 @@
 				"prefix": {
 					"type": "string",
 					"default": "http",
-					"readonly": true
+					"readOnly": true
 				}
 			}
 		}
