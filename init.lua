@@ -1,1 +1,2 @@
-require "httpserver/server"
+server=require "httpserver/server"
+server.start()
