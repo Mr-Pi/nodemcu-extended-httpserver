@@ -69,8 +69,16 @@
 							message: "A wifi password must contain 8 to 64 characters"
 						})
 					}
-					if(path==="root.wifiap.password" && value.length===0 &&
-					   editor.getEditor("root.wifiap.authentication").getValue()!=="AUTH_OPEN") {
+					if(path==="root.wifi.ap.password" && value.length===0 &&
+					   editor.getEditor("root.wifi.ap.authentication").getValue()!=="AUTH_OPEN") {
+						errors.push({
+							path: path,
+							property: 'format',
+							message: "A WiFi password must be provided unless authentication type is AUTH_OPEN"
+						})
+					}
+					else if(path==="root.safemode.password" && value.length===0 &&
+					   editor.getEditor("root.safemode.authentication").getValue()!=="AUTH_OPEN") {
 						errors.push({
 							path: path,
 							property: 'format',
@@ -84,7 +92,7 @@
 // initialization
 			var xmlReqGet = new XMLHttpRequest();
 			var xmlReqPost = new XMLHttpRequest();
-			xmlReqGet.open("GET", "/config.json", true)
+			xmlReqGet.open("GET", "/config", true)
 			xmlReqGet.setRequestHeader("Content-Type","application/json")
 
 			function submitConfig() {

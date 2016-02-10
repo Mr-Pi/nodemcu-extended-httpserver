@@ -1,6 +1,6 @@
 {
   "wifi": {
-    "mode": "STATION",
+    "mode": "STATIONAP",
     "client": {
       "ssid": "yourLocalWiFi",
       "password": "",
@@ -8,16 +8,18 @@
     },
     "ap": {
       "ssid": "NodeMCU httpserver",
-      "password": "",
-      "authentication": "AUTH_OPEN",
+      "password": "nodemcu-httpserver",
+      "authentication": "AUTH_WPA2_PSK",
       "hidden": false
     }
   },
   "safemode": {
     "enabled": true,
+    "timeout": 30000,
     "authentication": "AUTH_WPA2_PSK",
+    "asclient": true,
     "hidden": false,
-    "ssid": "NodeMCU httpserver",
+    "ssid": "NodeMCU httpserver config",
     "password": "NodeMCU-HTTP-Server"
   },
   "http": {

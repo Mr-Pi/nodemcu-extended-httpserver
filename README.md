@@ -9,3 +9,5 @@ http server for nodemcu firmware >1.5
 	* FILE
 	* TMR
 	* WIFI
+	* STRING
+	* TABLE
