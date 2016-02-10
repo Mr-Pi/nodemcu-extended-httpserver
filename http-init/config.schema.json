@@ -81,7 +81,17 @@
 					"readOnly": true,
 					"default": true,
 					"propertyOrder": 200,
-					"options": {"grid_columns":5}
+					"options": {"grid_columns":3}
+				},
+				"timeout": {
+					"type": "integer",
+					"readOnly": true,
+                    "format": "number",
+					"default": 30000,
+					"propertyOrder": 300,
+                    "minimum": 1,
+                    "maximum": 12884901,
+					"options": {"grid_columns":2}
 				},
 				"authentication": {
 					"type": "string",
