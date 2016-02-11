@@ -14,18 +14,21 @@ local function decodeURI(str)
 	return str
 end
 
-function httpreq.assembleBasicHeader(code, codeMsg, contentType, length)
+function httpreq.assembleBasicHeader(code, codeMsg, contentType, length, additionalHeaders)
 	local header="HTTP/1.1 "..tostring(code).." "..tostring(codeMsg).."\r\n"
 	header=header.."Server: NodeMCU simple httpserver (v0.1.0)\r\n"
 	header=header.."Content-Type: "..tostring(contentType).."\r\n"
 	header=header.."Content-Length: "..tostring(length).."\r\n"
 	header=header.."Cache-Control: no-cache\r\n"
 	header=header.."Connection: close\r\n"
+	if additionalHeaders and type(additionalHeaders)=="string" then
+		header=header..additionalHeaders
+	end
 	return header
 end
 
-function httpreq.assembleSimplePackage(code, codeMsg, contentType, body)
-	local package=httpreq.assembleBasicHeader(code, codeMsg, contentType, #tostring(body))
+function httpreq.assembleSimplePackage(code, codeMsg, contentType, body, additionalHeaders)
+	local package=httpreq.assembleBasicHeader(code, codeMsg, contentType, #tostring(body), additionalHeaders)
 	package=package.."\r\n"..tostring(body)
 	collectgarbage()
 	return package
@@ -38,7 +41,8 @@ function httpreq.parseURI(uri)
 	local filename = uri:gsub("^([^?$]+)[?]*(.*)$","%1")
 	local argsStr = uri:gsub("^([^?$]+)[?]*(.*)$","%2")
 	filename = config.get("http.prefix")..filename:gsub("/$","/index")
-	local _, _, ext = filename:find("[\.]+([^\.\/]+)$")
+	filename = filename:lower()
+	local ext = filename:match("[\.]+([^\.\/]+)$")
 
 	if not ext then
 		for _, cExt in ipairs(defaultExt) do
