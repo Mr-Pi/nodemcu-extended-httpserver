@@ -23,7 +23,6 @@ function staticResponder.respond(header, socket, handler)
 		collectgarbage()
 		return false
 	end
-	console.debug("serving file static: "..header.filename)
 	if header.method~="GET" and header.method~="HEAD" then
 		console.log("method not allowed for static file: "..header.filename)
 		httpreq.errorResponder(405, "Method Not Allowed", socket)
@@ -35,6 +34,7 @@ function staticResponder.respond(header, socket, handler)
 		collectgarbage()
 		return true
 	elseif header.method=="GET" then
+		console.debug("serving file static: "..header.filename)
 		file.close()
 		socket:on("sent", function(socket)
 			if not handler.bytesSent then handler.bytesSent=0 end
