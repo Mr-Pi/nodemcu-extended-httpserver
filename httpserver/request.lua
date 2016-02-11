@@ -84,7 +84,7 @@ function httpreq.parseHeader(payload)
 	console.debug("http request uri is: "..tostring(header.uri),6)
 	console.debug("http request http version is: "..tostring(header.version),6)
 
-	for key,value in headerStr:gmatch("([^:\r\n]+): ([^:\r\n]+)") do --parse all HTTP header options
+	for key,value in headerStr:gmatch("([^:\r\n]+): ([^\r\n]+)") do --parse all HTTP header options
 		header.opts[key]=value
 		console.debug("parsed header option '"..tostring(key).."'='"..tostring(value).."'",6)
 	end
