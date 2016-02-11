@@ -1,4 +1,5 @@
 require "console"
+require "httpserver/compile"
 
 console.log("nodemcu heap: "..tostring(node.heap()))
 tmr.register(0, 1000, tmr.ALARM_SINGLE, function()
