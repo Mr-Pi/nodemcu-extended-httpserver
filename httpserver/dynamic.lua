@@ -10,10 +10,6 @@ if not httpreq.responder then httpreq.responder={} end
 
 
 local dynamicResponder={}
-local serveredExts={html="text/html",css="text/css",js="text/javascript",txt="text/plain"}
-local function getMimeType(ext)
-	return serveredExts[ext] or "application/octet-stream"
-end
 
 function dynamicResponder.respond(header, socket, handler)
 	console.log("dynamicResponder executed")
@@ -30,7 +26,7 @@ function dynamicResponder.respond(header, socket, handler)
 end
 
 
-table.insert(httpreq.responder,dynamicResponder)
+table.insert(httpreq.responder, dynamicResponder)
 
 
 return console.moduleLoaded(...)
