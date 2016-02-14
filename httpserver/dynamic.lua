@@ -19,7 +19,14 @@ function dynamicResponder.respond(header, socket, handler)
 		collectgarbage()
 		return false
 	end
-	handler.dynamicResponder = require header.filename:match("(.*)[\.]+[^\.\/]+$")
+	local okay
+	okay, handler.dynamicResponder = pcall(require, header.filename:match("(.*)[\.][^\.\/]+$"))
+	if not okay then
+		console.log("failed to load dynamicResponder: "..header.filename)
+		httpreq.errorResponder(500, "Internal Server Error", socket)
+		collectgarbage()
+		return true
+	end
 	fslist=nil
 	collectgarbage()
 	return false

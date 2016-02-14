@@ -42,7 +42,7 @@ function httpreq.parseURI(uri)
 	local argsStr = uri:gsub("^([^?$]+)[?]*(.*)$","%2")
 	filename = config.get("http.prefix")..filename:gsub("/$","/index")
 	filename = filename:lower()
-	local ext = filename:match("[\.]+([^\.\/]+)$")
+	local ext = filename:match("[\.]([^\.\/]+)$")
 
 	if not ext then
 		for _, cExt in ipairs(defaultExt) do
