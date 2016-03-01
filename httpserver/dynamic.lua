@@ -5,35 +5,31 @@
 require "console"
 
 
-if not httpreq then httpreq={} end
-if not httpreq.responder then httpreq.responder={} end
+local function serverError(message, socket)
+	console.log(message)
+	httpreq.errorResponder(500, "Internal Server Error", socket)
+	collectgarbage()
+	return true
+end
 
-
-local dynamicResponder={}
-
-function dynamicResponder.respond(header, socket, handler)
+local function dynamicResponder(header, socket, handler)
 	console.log("dynamicResponder executed")
 	local fslist = file.list()
 	if not fslist[header.filename] or (header.ext~="lua" and header.ext~="lc") then
-		fslist=nil
+		fslist = nil
 		collectgarbage()
 		return false
 	end
-	local okay
-	okay, handler.dynamicResponder = pcall(require, header.filename:match("(.*)[\.][^\.\/]+$"))
-	if not okay then
-		console.log("failed to load dynamicResponder: "..header.filename)
-		httpreq.errorResponder(500, "Internal Server Error", socket)
-		collectgarbage()
-		return true
+	fslist = nil
+
+	if not pcall(function() dofile(header.filename)(handler.payload, header, handler, socket) end) then
+		handler.payload=nil collectgarbage()
+		return serverError("failed to proceed: "..header.filename, socket)
 	end
-	fslist=nil
+	okay=nil methodAllowed=nil methodsAllowed=nil handler.payload=nil
 	collectgarbage()
-	return false
+	return true
 end
 
 
-table.insert(httpreq.responder, dynamicResponder)
-
-
-return console.moduleLoaded(...)
+return dynamicResponder

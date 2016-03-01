@@ -5,17 +5,12 @@
 require "console"
 
 
-if not httpreq then httpreq={} end
-if not httpreq.responder then httpreq.responder={} end
-
-
-local staticResponder={}
-local serveredExts={html="text/html",css="text/css",js="text/javascript",txt="text/plain"}
+local serveredExts={html="text/html",css="text/css",js="text/javascript",txt="text/plain",json="application/json"}
 local function getMimeType(ext)
 	return serveredExts[ext] or "application/octet-stream"
 end
 
-function staticResponder.respond(header, socket, handler)
+local function staticResponder(header, socket, handler)
 	console.log("staticResponder executed")
 	local fslist = file.list()
 	if not fslist[header.filename] then
@@ -47,18 +42,17 @@ function staticResponder.respond(header, socket, handler)
 				okay, data = pcall(file.read, 512)
 				handler.bytesSent = file.seek()
 			end
+			file.close()
+			collectgarbage()
 			if okay and data then
 				socket:send(data)
 				console.debug("sending data: "..data,8)
 			elseif okay or handler.bytesSent>=handler.bytesToSent then
 				console.log("served served static file: "..tostring(header.filename))
-				file.close()
 				socket:close()
 			else
 				console.log("Internal Server Error - "..tostring(data))
 				httpreq.errorResponder(500, "Internal Server Error", socket)
-				file.close()
-				collectgarbage()
 			end
 			data=nil okay=nil
 			collectgarbage()
@@ -76,7 +70,4 @@ function staticResponder.respond(header, socket, handler)
 end
 
 
-table.insert(httpreq.responder,staticResponder)
-
-
-return console.moduleLoaded(...)
+return staticResponder

@@ -6,10 +6,7 @@ require "console"
 
 
 if not httpreq then httpreq={} end
-if not httpreq.responder then httpreq.responder={} end
-
-
-require "httpserver/static"
+if not httpreq.responder then httpreq.responder={"httpserver/dynamic","httpserver/static"} end
 
 
 return console.moduleLoaded(...)

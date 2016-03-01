@@ -6,10 +6,7 @@ require "console"
 
 
 if not httpreq then httpreq={} end
-if not httpreq.responder then httpreq.responder={} end
 
-
-local errorResponder={}
 
 function httpreq.errorResponder(code, codeMsg, socketAdditionalHeaders, additionalHeaders)
 	local errorMsg="<html><head>"
@@ -33,14 +30,11 @@ function httpreq.errorResponder(code, codeMsg, socketAdditionalHeaders, addition
 	end
 end
 
-function errorResponder.respond(header, socket, handler)
+function httpreq.error404(header, socket, handler)
 	console.log("errorResponder 404 for: "..header.uri)
 	httpreq.errorResponder(404," Not Found", socket)
 	return true
 end
-
-
-table.insert(httpreq.responder,errorResponder)
 
 
 return console.moduleLoaded(...)
