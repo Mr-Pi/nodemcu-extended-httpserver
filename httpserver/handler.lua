@@ -33,14 +33,14 @@ local Handler=class(function(handler,socket)
 			handler.package=handler.package+1
 			console.debug("bytesReceived: "..tostring(handler.bytesReceived))
 
-			local k,v = next(httpreq.responder)
-			while k and not v.respond(handler.header, socket, handler) do
-				k, v = next(httpreq.responder, k)
+			local processed = false
+			for _, responder in ipairs(httpreq.responder) do
+				processed = dofile(responder..".lc")(handler.header, socket, handler)
+				_=nil responder=nil
+				collectgarbage()
+				if processed then break end
 			end
-
---			if not handler.header.contentLength or handler.bytesReceived>=handler.header.contentLength then
---				socket:close()
---			end
+			if not processed then httpreq.error404(handler.header, socket, handler) end
 		end
 		data=nil
 		collectgarbage()
