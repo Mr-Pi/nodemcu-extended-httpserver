@@ -101,13 +101,14 @@
 				} else {
 					console.debug(editor.getValue())
 					editor.disable()
-					xmlReqPost.open("POST", "/config.lua", true)
+					xmlReqPost.open("POST", "/config", true)
 					xmlReqPost.setRequestHeader("Content-Type","application/json")
 					xmlReqPost.onload=function() {
 						editor.enable()
 						if(window.location.hash==="#expert")
 							$('[disabled]').prop('disabled', false);
 					}
+					xmlReqPost.ontimeout=function() {alert("timeout")}
 					xmlReqPost.send(JSON.stringify(editor.getValue()))
 				}
 			}
