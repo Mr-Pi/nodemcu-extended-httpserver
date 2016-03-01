@@ -17,12 +17,16 @@ end
 function httpreq.assembleBasicHeader(code, codeMsg, contentType, length, additionalHeaders)
 	local header="HTTP/1.1 "..tostring(code).." "..tostring(codeMsg).."\r\n"
 	header=header.."Server: NodeMCU simple httpserver (v0.1.0)\r\n"
-	header=header.."Content-Type: "..tostring(contentType).."\r\n"
-	header=header.."Content-Length: "..tostring(length).."\r\n"
+	if type(contentType)=="string" then
+		header=header.."Content-Type: "..tostring(contentType).."\r\n"
+	end
+	if type(length)=="number" then
+		header=header.."Content-Length: "..tostring(length).."\r\n"
+	end
 	header=header.."Cache-Control: no-cache\r\n"
 	header=header.."Connection: close\r\n"
 	if additionalHeaders and type(additionalHeaders)=="string" then
-		header=header..additionalHeaders
+		header = header..additionalHeaders
 	end
 	return header
 end
@@ -57,9 +61,9 @@ function httpreq.parseURI(uri)
 	console.debug("http request filename: "..tostring(filename),6)
 	console.debug("http request argument string: "..tostring(argsStr),7)
 
-	for key,value in argsStr:gmatch("([^=&]+)=([^=&]+)") do
-		key=decodeURI(key)
-		value=decodeURI(value)
+	for key, value in argsStr:gmatch("([^=&]+)=([^=&]+)") do
+		key = decodeURI(key)
+		value = decodeURI(value)
 		console.debug("parsed uri argument '"..tostring(key).."'='"..tostring(value).."'",6)
 	end
 
@@ -88,12 +92,12 @@ function httpreq.parseHeader(payload)
 	console.debug("http request uri is: "..tostring(header.uri),6)
 	console.debug("http request http version is: "..tostring(header.version),6)
 
-	for key,value in headerStr:gmatch("([^:\r\n]+): ([^\r\n]+)") do --parse all HTTP header options
-		header.opts[key]=value
+	for key, value in headerStr:gmatch("([^:\r\n]+): ([^\r\n]+)") do --parse all HTTP header options
+		header.opts[key] = value
 		console.debug("parsed header option '"..tostring(key).."'='"..tostring(value).."'",6)
 	end
 	if header.opts["Content-Length"] then
-		header.contentLength=tonumber(header.opts["Content-Length"])
+		header.contentLength = tonumber(header.opts["Content-Length"])
 	end
 	header.filename, header.args, header.ext = httpreq.parseURI(header.uri)
 	headerStr=nil hEnd=nil bStart=nil payload=nil
