@@ -62,11 +62,9 @@ methodHandler["POST"] = function(socket, header, payload, handler)
 		httpreq.errorResponder(500, "Internal Server Error", socket)
 	end
 	file.close()
-	print("POST", handler.bytesReceived, header.contentLength)
 	openmode=nil collectgarbage()
 	if handler.bytesReceived>=header.contentLength then
 		local data = httpreq.assembleSimplePackage(200, "OK", "application/json; charset=UTF-8","{\"config\":\"updated\"}","")
-		print(data)
 		socket:send(data)
 		socket:close()
 		data = nil

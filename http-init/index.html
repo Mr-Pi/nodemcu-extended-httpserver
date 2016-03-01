@@ -109,6 +109,7 @@
 							$('[disabled]').prop('disabled', false);
 					}
 					xmlReqPost.ontimeout=function() {alert("timeout")}
+					xmlReqPost.onerror=xmlReqPost.onload
 					xmlReqPost.send(JSON.stringify(editor.getValue()))
 				}
 			}

@@ -4,7 +4,7 @@
 
 require "console"
 require "config"
-Handler=require "httpserver/handler"
+Handler = require "httpserver/handler"
 
 local cb={}
 local server
