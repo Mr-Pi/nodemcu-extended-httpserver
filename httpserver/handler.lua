@@ -5,11 +5,9 @@
 require "class"
 require "console"
 require "httpserver/request"
-require "httpserver/responder"
-require "httpserver/errorpage"
 
 
-local Handler=class(function(handler,socket)
+local Handler=class(function(handler, socket)
 	console.log("http handler connection opened")
 	handler.socket=socket
 	handler.payload=""
@@ -33,14 +31,12 @@ local Handler=class(function(handler,socket)
 			handler.package=handler.package+1
 			console.debug("bytesReceived: "..tostring(handler.bytesReceived))
 
-			local processed = false
 			for _, responder in ipairs(httpreq.responder) do
-				processed = dofile(responder..".lc")(handler.header, socket, handler)
+				local processed = dofile(responder)(handler.header, socket, handler)
 				_=nil responder=nil
 				collectgarbage()
 				if processed then break end
 			end
-			if not processed then httpreq.error404(handler.header, socket, handler) end
 		end
 		data=nil
 		collectgarbage()

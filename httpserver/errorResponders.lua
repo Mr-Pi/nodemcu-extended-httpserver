@@ -1,14 +1,10 @@
 -- vim: ts=4 sw=4
 --
--- http request handler (error responder)
+-- http error responder
 
 require "console"
 
-
-if not httpreq then httpreq={} end
-
-
-function httpreq.errorResponder(code, codeMsg, socketAdditionalHeaders, additionalHeaders)
+return function(code, codeMsg, socketAdditionalHeaders, additionalHeaders)
 	local errorMsg="<html><head>"
 	errorMsg=errorMsg.."<title>"..tostring(code).." - "..tostring(codeMsg).."</title>"
 	errorMsg=errorMsg.."</head><body>"
@@ -28,12 +24,3 @@ function httpreq.errorResponder(code, codeMsg, socketAdditionalHeaders, addition
 		return errorMsg
 	end
 end
-
-function httpreq.error404(header, socket, handler)
-	console.log("errorResponder 404 for: "..header.uri)
-	httpreq.errorResponder(404," Not Found", socket)
-	return true
-end
-
-
-return console.moduleLoaded(...)
