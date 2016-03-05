@@ -105,5 +105,9 @@ function httpreq.parseHeader(payload)
 	return header, bodyStr
 end
 
+function httpreq.sendFinal(socket, data)
+	socket:send(data)
+	socket:on("sent", function(socket) socket:close() socket=nil end)
+end
 
 return console.moduleLoaded(...)

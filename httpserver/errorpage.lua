@@ -20,8 +20,7 @@ function httpreq.errorResponder(code, codeMsg, socketAdditionalHeaders, addition
 	end
 	errorMsg = httpreq.assembleSimplePackage(code, codeMsg, "text/html; charset=UTF-8", errorMsg, additionalHeaders)
 	if socketAdditionalHeaders and type(socketAdditionalHeaders)=="userdata" then
-		socketAdditionalHeaders:send(errorMsg)
-		socketAdditionalHeaders:close()
+		httpreq.sendFinal(socketAdditionalHeaders, errorMsg)
 		errorMsg=nil
 		collectgarbage()
 		return true

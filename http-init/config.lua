@@ -65,8 +65,7 @@ methodHandler["POST"] = function(socket, header, payload, handler)
 	openmode=nil collectgarbage()
 	if handler.bytesReceived>=header.contentLength then
 		local data = httpreq.assembleSimplePackage(200, "OK", "application/json; charset=UTF-8","{\"config\":\"updated\"}","")
-		socket:send(data)
-		socket:close()
+		httpreq.sendFinal(socket, data)
 		data = nil
 		collectgarbage()
 		console.log("configuration written "..tostring(node.heap()))
