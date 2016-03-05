@@ -8,7 +8,7 @@ local methodHandler = {}
 
 methodHandler["HEAD"] = function(socket, header, payload, handler)
 	local fslist = file.list()
-	handler.bytesToSent = fslist["config.json"] or 0
+	handler.bytesToSent = fslist["config.json"] or 2
 	fslist = nil
 	collectgarbage()
 	socket:send(httpreq.assembleBasicHeader(200, "OK", "application/json", handler.bytesToSent).."\r\n")
@@ -29,10 +29,13 @@ methodHandler["GET"] = function(socket, header, payload, handler)
 		if okay then
 			okay, data = pcall(file.read, 512)
 			handler.bytesSent = file.seek()
+		else
+			data = "{}"
+			okay = true
 		end
 		file.close()
 		collectgarbage()
---		print("methodHandler GET", okay, data, handler.bytesSent, handler.bytesToSent)
+		print("methodHandler GET", okay, data, handler.bytesSent, handler.bytesToSent)
 		if okay and data then
 			socket:send(data)
 			console.debug("sending data: "..data,8)
