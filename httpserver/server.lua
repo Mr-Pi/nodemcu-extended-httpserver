@@ -42,6 +42,7 @@ function cb.startSafemode()
 	tmr.start(0)
 end
 
+httpreq.updateResponders()
 if config.get("safemode.enabled") or config.get("http.enabled") then
 	cb.start()
 end

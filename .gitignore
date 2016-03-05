@@ -31,6 +31,7 @@
 # Vim swap files
 *.swp
 *.swo
+*.swn
 
 # Backup files
 *.bak

@@ -1,14 +1,10 @@
 -- vim: ts=4 sw=4
 --
--- http request handler (error responder)
+-- http error responder
 
 require "console"
 
-
-if not httpreq then httpreq={} end
-
-
-function httpreq.errorResponder(code, codeMsg, socketAdditionalHeaders, additionalHeaders)
+return function(code, codeMsg, socketAdditionalHeaders, additionalHeaders)
 	local errorMsg="<html><head>"
 	errorMsg=errorMsg.."<title>"..tostring(code).." - "..tostring(codeMsg).."</title>"
 	errorMsg=errorMsg.."</head><body>"
@@ -20,8 +16,7 @@ function httpreq.errorResponder(code, codeMsg, socketAdditionalHeaders, addition
 	end
 	errorMsg = httpreq.assembleSimplePackage(code, codeMsg, "text/html; charset=UTF-8", errorMsg, additionalHeaders)
 	if socketAdditionalHeaders and type(socketAdditionalHeaders)=="userdata" then
-		socketAdditionalHeaders:send(errorMsg)
-		socketAdditionalHeaders:close()
+		httpreq.sendFinal(socketAdditionalHeaders, errorMsg)
 		errorMsg=nil
 		collectgarbage()
 		return true
@@ -29,12 +24,3 @@ function httpreq.errorResponder(code, codeMsg, socketAdditionalHeaders, addition
 		return errorMsg
 	end
 end
-
-function httpreq.error404(header, socket, handler)
-	console.log("errorResponder 404 for: "..header.uri)
-	httpreq.errorResponder(404," Not Found", socket)
-	return true
-end
-
-
-return console.moduleLoaded(...)

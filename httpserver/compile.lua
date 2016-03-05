@@ -1,22 +1,22 @@
 -- vim: sw=4 ts=4
 --
--- http module builder
+-- module builder
 
 require "console"
 
+local exclude={}
+exclude["init.lua"] = true
+exclude["httpserver/compile.lua"] = true
 
-function compileAll()
-	for name, size in pairs(file.list()) do
-		if name:find("\.lua$") and not name:find("^init.lua$") then
-			console.log("compile: "..name)
-			node.compile(name)
-			file.remove(name)
-		end
+for name, size in pairs(file.list()) do
+	if name:find("\.lua$") and not exclude[name] then
+		console.log("compile: "..name)
+		node.compile(name)
+		file.remove(name)
 	end
-	name=nil size=nil
-	collectgarbage()
 end
-compileAll()
+name=nil size=nil exclude=nil
 
+collectgarbage()
 
-return console.moduleLoaded(...)
+return nil

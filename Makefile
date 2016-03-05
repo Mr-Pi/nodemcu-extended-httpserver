@@ -12,6 +12,7 @@ SPEED=9600
 ######################################################################
 HTTP_FILES := $(wildcard http/*)
 SERVER_FILES := $(wildcard httpserver/*) $(wildcard http-init/*) config.default.json base64.lua class.lua config.lua console.lua
+RESPONDER_FILES := $(wildcard httpresponder/*)
 
 # Print usage
 usage:
@@ -29,11 +30,14 @@ upload:
 upload_http: $(HTTP_FILES)
 	@$(NODEMCU-UPLOADER) -b $(SPEED) -p $(PORT) upload $(foreach f, $^, $(f))
 
+upload_responder: $(RESPONDER_FILES)
+	@$(NODEMCU-UPLOADER) -b $(SPEED) -p $(PORT) upload $(foreach f, $^, $(f))
+
 # Upload httpserver lua files (init and server module)
-upload_server: $(SERVER_FILES)
+upload_server: $(SERVER_FILES) $(RESPONDER_FILES)
 	@$(NODEMCU-UPLOADER) -b $(SPEED) -p $(PORT) upload $(foreach f, $^, $(f))
 
 # Upload all
-upload_all: $(SERVER_FILES) $(HTTP_FILES)
+upload_all: $(SERVER_FILES) $(RESPONDER_FILES) $(HTTP_FILES)
 	@$(NODEMCU-UPLOADER) -b $(SPEED) -p $(PORT) upload $(foreach f, $^, $(f))
 
