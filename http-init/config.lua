@@ -14,8 +14,8 @@ methodHandler["HEAD"] = function(socket, header, payload, handler)
 		header.filename = "config.default.json"
 	end
 	fslist = nil
-	collectgarbage()
 	dofile("httpresponder/11_static.lc")(header, socket, handler)
+	collectgarbage()
 end
 
 methodHandler["GET"] = function(socket, header, payload, handler)
