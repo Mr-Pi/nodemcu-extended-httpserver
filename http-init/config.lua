@@ -8,47 +8,18 @@ local methodHandler = {}
 
 methodHandler["HEAD"] = function(socket, header, payload, handler)
 	local fslist = file.list()
-	handler.bytesToSent = fslist["config.json"] or 2
+	header.ext = "json"
+	header.filename = "config.json"
+	if not fslist["config.json"] then
+		header.filename = "config.default.json"
+	end
 	fslist = nil
 	collectgarbage()
-	socket:send(httpreq.assembleBasicHeader(200, "OK", "application/json", handler.bytesToSent).."\r\n")
-	if header.method=="HEAD" then
-		socket:close()
-	end
+	dofile("httpresponder/11_static.lc")(header, socket, handler)
 end
 
 methodHandler["GET"] = function(socket, header, payload, handler)
 	console.debug("sending out configuration")
-	socket:on("sent", function(socket)
-		if not handler.bytesSent then handler.bytesSent=0 end
-		local data = "failed to open configuration file"
-		local okay = file.open("config.json")
-		if okay then
-			okay, data = pcall(file.seek, "set", handler.bytesSent)
-		end
-		if okay then
-			okay, data = pcall(file.read, 512)
-			handler.bytesSent = file.seek()
-		else
-			data = "{}"
-			okay = true
-		end
-		file.close()
-		collectgarbage()
-		print("methodHandler GET", okay, data, handler.bytesSent, handler.bytesToSent)
-		if okay and data then
-			socket:send(data)
-			console.debug("sending data: "..data,8)
-		elseif okay or handler.bytesSent>=handler.bytesToSent then
-			console.log("served served configuration as json file")
-			socket:close()
-		else
-			console.log("Internal Server Error - "..tostring(data))
-			httpreq.errorResponder(500, "Internal Server Error", socket)
-		end
-		data=nil okay=nil
-		collectgarbage()
-	end)
 	methodHandler["HEAD"](socket, header, payload, handler)
 end
 
