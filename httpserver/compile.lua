@@ -5,7 +5,7 @@
 require "console"
 
 
-function compileAll()
+local function compileAll()
 	for name, size in pairs(file.list()) do
 		if name:find("\.lua$") and not name:find("^init.lua$") then
 			console.log("compile: "..name)
@@ -19,4 +19,9 @@ end
 compileAll()
 
 
-return console.moduleLoaded(...)
+local function loaded(module)
+	console.moduleLoaded(module)
+	package.loaded[module]=nil
+	collectgarbage()
+end
+return loaded(...)
