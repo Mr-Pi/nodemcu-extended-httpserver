@@ -4,7 +4,6 @@
 
 require "console"
 
-
 if not httpreq then httpreq={} end
 if not httpreq.responder then
 	httpreq.responder = {}
@@ -17,6 +16,7 @@ if not httpreq.responder then
 	fslist = nil
 	table.sort(httpreq.responder)
 	collectgarbage()
+	console.log("responder list assembled")
 end
 
 return nil
