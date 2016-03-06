@@ -5,7 +5,7 @@
 require "console"
 
 
-local serveredExts={html="text/html",css="text/css",js="text/javascript",txt="text/plain",json="application/json"}
+local serveredExts={html="text/html",css="text/css",js="text/javascript",txt="text/plain",json="application/json",svg="image/svg+xml",jpg="image/jpeg",png="image/png",gif="image/gif"}
 local function getMimeType(ext)
 	return serveredExts[ext] or "application/octet-stream"
 end
