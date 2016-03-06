@@ -20,6 +20,7 @@
 		<meta name="page-type" content="configuration" />
 
 		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://cdn.rawgit.com/danielm/uploader/master/demos/css/uploader.css" rel="stylesheet">
 	</head>
 	<body>
 		<div class="container">
@@ -29,15 +30,24 @@
 				<h3><span>Configuration - Please Wait...</span></h3>
 				<div class="well well-sm"></div>
 			</div>
-			<form method="post">
-				<h3><span>Firmware upgrade</span></h3>
+			<div>
+				<h3><span>Firmware Update</span></h3>
 				<div class="well well-sm">
-					<div class="form-group">
-						<label for="fw-upgrade">Firmware</label>
-						<input name="firmware" type="file" class="form-control" id="fw-upgrade">
+					<div class="progress">
+						<div id="fwupdate-status" class="progress-bar progress-bar-striped" role="progressbar" style="min-width: 2em;">0%</div>
+					</div>
+					<div id="fwupdate" class="uploader">
+						<div>Drag &amp; Drop firmware file here</div>
+						<div class="or">-or-</div>
+						<div class="browser">
+							<label>
+								<span>Click to open the file Browser</span>
+								<input type="file" name="files[]" title='Click to upload new firmware'>
+							</label>
+						</div>
 					</div>
 				</div>
-			</form>
+			</div>
 		</div>
 		<abbr title="Enter expert mode" style="display:block;position:fixed;bottom:0.25em;right:0.25em;">
 			<a href="#expert" onclick="$('[disabled]').prop('disabled',false);" style="color:darkred;">π</a>
@@ -46,6 +56,7 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 		<script src="https://cdn.rawgit.com/JJediny/json-editor/gh-pages/dist/jsoneditor.min.js"></script>
+		<script src="https://cdn.rawgit.com/danielm/uploader/master/src/dmuploader.min.js"></script>
 		<script>
 // defaults
 			JSONEditor.defaults.options.theme = 'bootstrap3'
@@ -128,6 +139,56 @@
 				}
 			}
 			xmlReqGet.send()
+			var updateUploadState = function(percent){
+				$("#fwupdate-status").width(percent+"%")
+				$("#fwupdate-status").html(percent+"%")
+			}
+			$("#fwupdate").dmUploader({
+				url: "/fwupdate",
+				extFilter: "fw;txt",
+				maxFiles: 1,
+				onInit: function(){
+					console.log("firmware uploader successfully initialized");
+				},
+				onFallbackMode: function(message){
+					console.log("Upload plugin can't be initialized: " + message);
+				},
+				onNewFile: function(id, file){
+					console.log("new file", id, file)
+					$("#fwupdate-status").removeClass("progress-bar-danger")
+					$("#fwupdate-status").removeClass("progress-bar-success")
+					updateUploadState(0)
+				},
+				onBeforeUpload: function(id){
+					console.log("Starting to upload #" + id);
+					$("#fwupdate-status").addClass("active")
+					updateUploadState(0)
+				},
+				onComplete: function(){
+					console.log("We reach the end of the upload Queue!")
+				},
+				onUploadProgress: function(id, percent){
+					console.log("upload progress", id, percent)
+					updateUploadState(percent)
+				},
+				onUploadSuccess: function(id, data){
+					console.log("Succefully upload #" + id);
+					console.log("Server response was:");
+					console.log(data);
+					$("#fwupdate-status").removeClass("active")
+					if(data.fwupdate=="success") {
+						$("#fwupdate-status").addClass("progress-bar-success")
+						$("#fwupdate").remove()
+					} else {
+						$("#fwupdate-status").addClass("progress-bar-danger")
+					}
+				},
+				onUploadError: function(id, message){
+					console.log("Error trying to upload ", id, message);
+					$("#fwupdate-status").removeClass("active")
+					$("#fwupdate-status").addClass("progress-bar-danger")
+				}
+			})
 		</script>
 	</body>
 </html>
