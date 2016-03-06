@@ -6,6 +6,10 @@ require "console"
 
 return function(payload, header, handler, socket)
 	if handler.package==1 then
+		if header.method~="POST" then
+			httpreq.errorResponder(405, "Method Not Allowed", socket, "Allow: POST\r\n")
+			return true
+		end
 		file.remove("http-init/fwupdate.fw.txt")
 		console.debug("applying fwupdate")
 	end
