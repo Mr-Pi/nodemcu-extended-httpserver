@@ -4,7 +4,7 @@
 -- this module based on 'https://github.com/nodemcu/nodemcu-firmware/blob/dev/lua_modules/base64/base64_v2.lua' by 'md5crypt'
 
 local tab = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-base64 = {
+local base64 = {
 	encode = function(data)
 		local l,out = 0,''
 		local m = (3-data:len()%3)%3
@@ -37,3 +37,5 @@ base64 = {
 		return out:sub(1,-b-1)
 	end
 }
+
+return base64
