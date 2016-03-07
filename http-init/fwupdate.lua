@@ -27,7 +27,7 @@ return function(payload, header, handler, socket)
 				data="{\"fwupdate\":\"success\"}"
 			end
 		end
-		local data = httpreq.assembleSimplePackage(200, "OK", "application/json; charset=UTF-8", data)
+		data = httpreq.assembleSimplePackage(200, "OK", "application/json; charset=UTF-8", data)
 		httpreq.sendFinal(socket, data)
 		data=nil
 		collectgarbage()
